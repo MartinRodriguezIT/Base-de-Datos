@@ -15,22 +15,18 @@ create table Resultados
 create table Rankings
 (
 	idResultado int primary key,
-    segundosDiff int not null,
-    minutosDiff int not null,
-    horasDiff int not null,
-    segundosTrans int not null,
-    minutosTrans int not null,
-    horasTrans int not null,
-    puntos int,
-    nombreJugador varchar(40),
-    posicion int not null
-
+    tiempo_Transcurrido time not null,
+    puntos int not null,
+    posicion int not null,
+    nombreJugador varchar(40)
 );
 create table particular
 (
 	idResultado int primary key,
-    puntosPorSets int not null,
-    sets int not null,
+    puntosVisi int not null,
+	puntosLocal int not null,
+    setsVisi int not null,
+	setsLocal int not null,
     ventaja boolean
 );
 create table Puntos
@@ -41,35 +37,38 @@ create table Puntos
 
 );
 
-create table Aplica
+create table Genera
 (
-	idDeporte int,
+	idEncuentro int,
     idResultado int,
-    primary key (idDeporte,idResultado)
+    primary key (idEncuentro,idResultado)
 );
  
- create table Reglas
+create table Ocurrencias
 (
-	idReglas int primary key
+	idOcurrencia int primary key,
+    nombre varchar(50) not null
 );
-create table Instrucciones
+create table hacen
 (
-	idReglas int primary key,
-    descripcion varchar(500) not null,
-    titulo varchar(60) not null,
-    subtitulo varchar(60)
+	idIncidencia int,
+    idOcurrencia int,
+    primary key (idIncidencia,idOcurrencia)
 );
-create table Sanciones
+create table notifica
 (
-	idReglas int primary key,
-    razon varchar(500) not null,
-    sancion varchar(500) not null
+
+	idIncidencia int,
+    idOcurrencia int,
+	idEncuentro int,
+    primary key (idIncidencia,idOcurrencia, idEncuentro)
 );
-create table Poseen
+create table Incidencias
 (
-	idDeporte int,
-    idReglas int,
-    primary key (idDeporte,idReglas)
+	idIncidencia int,
+    idJugador int not null,
+	minuto int not null,
+    primary key (idIncidencia)
 );
  create table Participantes
 (
@@ -83,9 +82,8 @@ create table Poseen
 create table Se_Especializa_En
 (
 	idDeporte int,
-    idResultado int,
     idParticipante int,
-    primary key (idDeporte,idResultado,idparticipante)
+    primary key (idDeporte,idparticipante)
 );
 create table Jugador
 (
@@ -117,18 +115,14 @@ create table Practican
 	idJugador int,
     idEquipo int,
     idDeporte int,
-    idResultado int,
-    primary key (idEquipo,idJugador,idDeporte,idResultado)
+    primary key (idEquipo,idJugador,idDeporte)
 );
 create table Encuentros
 (
 	idEncuentro int primary key,
-    dia int not null,
-    mes int not null,
-    anio int not null,
-    hora int not null,
-    minuto int,
-    termino boolean not null
+    fecha date not null,
+    horaComienzo time not null,
+    horaFinaliza time
 );
 create table Competencia_Colectiva
 (
@@ -156,8 +150,10 @@ create table Compite
 );
 create table Alineacion
 (
-	idAlineacion int primary key,
-    formacion varchar(60) not null
+	idAlineacion int,
+	idJugador int,
+    Poscion varchar(60) not null,
+	primary key(idAlineacion, idJugador)
 );
 
 create table Duracion
@@ -206,12 +202,11 @@ create table realiza
 create table Fase 
 (
 	idTorneo int,
-    nFases int,
+    IdFase int,
     estadoFase varchar(50) not null,
     nombreFase varchar(50) not null,
-    primary key (idTorneo,nFases)
+    primary key (idTorneo,IdFase)
 );
-
 create table FaseInscriptos
 (
 	idTorneo int,
@@ -250,7 +245,7 @@ create table DeportesFavoritos
 create table Guest
 (
 	idUsuario int primary key,
-    nombreAutogen varchar(500) not null
+    nombreAutogen varchar(100) not null
 );
 create table Visualiza
 (
@@ -275,19 +270,15 @@ create table Utiliza
 (
 	idAlineacion int,
     idEncuentro int,
-    idEquipo int,
-    idJugador int,
-    primary key(idAlineacion,idEncuentro,idEquipo,idJugador)
+    primary key(idAlineacion,idEncuentro)
 );
 
 alter table Vip add constraint uk_correo unique(correo);
-alter table aplica add constraint fk_aplicaDEPO foreign key (idDeporte) references deportes(idDeporte);
-alter table aplica add constraint fk_aplicaRESU foreign key (idResultado) references resultados(idResultados);
 alter table competencia_colectiva add constraint fk_compCole foreign key (idEncuentro) references encuentros(idEncuentro);
 alter table competencia_individual add constraint fk_compIndi foreign key (idEncuentro) references encuentros(idEncuentro);
 alter table compite add constraint fk_compiteENCU foreign key (idEncuentro) references encuentros(idEncuentro);
 alter table compite add constraint fk_compiteEQUI foreign key (idEquipo) references equipos(idEquipo);
-alter table faseinscriptos add constraint fk_faseinscri foreign key (idTorneo,nFases) references fase(idTorneo,nFases);
+alter table faseinscriptos add constraint fk_faseinscri foreign key (idTorneo,nFases) references fase(idTorneo,idFase);
 alter table compite add constraint fk_compiteJUGA foreign key (idJugador) references jugador(idJugador);
 alter table deportesfavoritos add constraint fk_depoFavUSU foreign key (idUsuario) references usuarios(idUsuario);
 alter table deportesfavoritos add constraint fk_depoFavDEPO foreign key (deporteFavorito) references deportes(idDeporte);
@@ -295,24 +286,18 @@ alter table fase add constraint fk_fase foreign key (idTorneo) references torneo
 alter table forman add constraint fk_formanJUGA foreign key (idJugador) references jugador(idJugador);
 alter table forman add constraint fk_formanEQUI foreign key (idEquipo) references equipos(idEquipo);
 alter table guest add constraint fk_guest foreign key (idUsuario) references usuarios(idUsuario);
-alter table instrucciones add constraint fk_instru foreign key (idReglas) references reglas(idReglas);
 alter table participa add constraint fk_partiENCUE foreign key (idEncuentro) references encuentros(idEncuentro);
 alter table participa add constraint fk_partiPARTI foreign key (idParticipante) references participantes(idParticipante);
-alter table poseen add constraint fk_poseenDEPO foreign key (idDeporte) references deportes(idDeporte);
-alter table poseen add constraint fk_poseenREG foreign key (idReglas) references reglas(idReglas);
 alter table practican add constraint fk_pracJUGA foreign key (idJugador) references jugador(idJugador);
 alter table practican add constraint fk_pracEQUI foreign key (idEquipo) references equipos(idEquipo);
 alter table practican add constraint fk_pracDEPO foreign key (idDeporte) references deportes(idDeporte);
-alter table practican add constraint fk_pracRESU foreign key (idResultado) references resultados(idResultados);
 alter table rankings add constraint fk_rankings foreign key (idResultado) references resultados(idResultados);
 alter table rounds add constraint fk_rounds foreign key (idDuracion) references duracion(idDuracion);
-alter table sanciones add constraint fk_sancion foreign key (idReglas) references reglas(idReglas);
 alter table se_especializa_en add constraint fk_seEspeDEPO foreign key (idDeporte) references deportes(idDeporte);
-alter table se_especializa_en add constraint fk_seEspeRESU foreign key (idResultado) references resultados(idResultados);
 alter table se_especializa_en add constraint fk_seEspePARTI foreign key (idParticipante) references participantes(idParticipante);
 alter table sets add constraint fk_sets foreign key (idDuracion) references duracion(idDuracion);
 alter table tiempo add constraint fk_tiempo foreign key (idDuracion) references duracion(idDuracion);
-alter table tiene add constraint fk_tieneFASE foreign key (idTorneo,nFases) references fase(idTorneo,nFases);
+alter table tiene add constraint fk_tieneFASE foreign key (idTorneo,nFases) references fase(idTorneo,idFase);
 alter table tiene add constraint fk_tieneENCU foreign key (idEncuentro) references encuentros(idEncuentro);
 alter table tiene_usuario add constraint fk_tiene_usuPUB foreign key (idPublicidad) references publicidad(idPublicidad);
 alter table tiene_usuario add constraint fk_tiene_usuUSU foreign key (idUsuario) references guest(idUsuario);
@@ -320,19 +305,7 @@ alter table vip add constraint fk_vip foreign key (idUsuario) references usuario
 alter table visualiza add constraint fk_visaUSU foreign key (idUsuario) references usuarios(idUsuario);
 alter table visualiza add constraint fk_visaENCU foreign key (idEncuentro) references encuentros(idEncuentro);
 alter table deportes add constraint ck_depoCantJuga check (cantidadJugadores > 1);
-alter table encuentros add constraint ck_encuDia check (dia < 32);
-alter table encuentros add constraint ck_encuDia2 check (dia > 0);
-alter table encuentros add constraint dk_encuMes check (mes < 13);
-alter table encuentros add constraint dk_encuMes2 check (mes > 0);
-alter table encuentros add constraint ck_encuAnio check (anio > 2000);
-alter table encuentros add constraint ck_encuHora check (hora < 24);
-alter table encuentros add constraint ck_encuHora2 check (hora >= 0);
-alter table encuentros add constraint ck_encuMinuto check (minuto < 61);
-alter table encuentros add constraint ck_encuMinuto2 check (minuto >=0);
-alter table encuentros alter column termino set default 0;
-alter table jugador add constraint ck_jugaEdad check(edad > 17);
 alter table jugador add constraint ck_jugaSexo check(sexo = 'f' or sexo = 'm');
-alter table participantes add constraint ck_partiEdad check(edad > 5);
 alter table participantes add constraint ck_partiSexo check(sexo = 'f' or sexo = 'm');
 alter table tiempo add constraint ck_tiempoHoras check(horas >= 0);
 alter table tiempo add constraint ck_tiempoHoras2 check(horas < 25);
@@ -342,18 +315,27 @@ alter table vip add constraint ck_usuRol check(rol >= 0);
 alter table vip add constraint ck_vipMesesSus check(mesesSuscritos > 0);
 alter table utiliza add CONSTRAINT `fk_utiliALI` FOREIGN KEY (`idAlineacion`) REFERENCES `alineacion` (`idAlineacion`);
 alter table utiliza add CONSTRAINT `fk_utiliENCU` FOREIGN KEY (`idEncuentro`) REFERENCES `encuentros` (`idEncuentro`);
-alter table utiliza add CONSTRAINT `fk_utiliEQUI` FOREIGN KEY (`idEquipo`) REFERENCES `equipos` (`idEquipo`);
-alter table utiliza add CONSTRAINT `fk_utiliJUGA` FOREIGN KEY (`idJugador`) REFERENCES `jugador` (`idJugador`);
 	
+alter table genera add CONSTRAINT `fk_generaENCU` FOREIGN KEY (`idEncuentro`) REFERENCES `encuentros` (`idEncuentro`);
+alter table genera add CONSTRAINT `fk_generaResu` FOREIGN KEY (`idResultado`) REFERENCES `resultados` (`idResultados`);
 
 
-insert into alineacion(idAlineacion,formacion) /*insertar valores a la tabla alineacion*/ 
+alter table hacen add CONSTRAINT `fk_hacenOcu` FOREIGN KEY (`idOcurrencia`) REFERENCES `Ocurrencias` (`idOcurrencia`);
+alter table hacen add CONSTRAINT `fk_hacenInci` FOREIGN KEY (`idIncidencia`) REFERENCES `Incidencias` (`idIncidencia`);
+
+alter table notifica add CONSTRAINT `fk_notificaInci` FOREIGN KEY (`idIncidencia`) REFERENCES `Incidencias` (`idIncidencia`);
+alter table notifica add CONSTRAINT `fk_notificaOcu` FOREIGN KEY (`idOcurrencia`) REFERENCES `ocurrencias` (`idOcurrencia`);
+alter table notifica add CONSTRAINT `fk_notificaEncu` FOREIGN KEY (`idEncuentro`) REFERENCES `encuentros` (`idEncuentro`);
+
+
+
+insert into alineacion(idAlineacion,idJugador, Poscion) /*insertar valores a la tabla alineacion*/ 
 values 
-(1,'1-2-3'),
-(2,'4-8-3'),
-(3,'6-1-3'),
-(4,'en triangulo'),
-(5,'en cuadrado');
+(1,1,'delantero'),
+(2,2,'bateador'),
+(3,3,'golero'),
+(4,4,'delantero'),
+(5,5,'saguero');
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into deportes(idDeporte,cantidadJugadores,categoria,nombre) /*insertar valores a la tabla deportes*/ 
 values 
@@ -378,14 +360,14 @@ values
 (8),
 (9);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-insert into encuentros(idEncuentro,dia,mes,anio,hora,minuto,termino) /*insertar valores a la tabla encuentros(para el valor termino si es 0 es que sigue sucediendo)*/
+insert into encuentros(idEncuentro,fecha,horaComienzo, horaFinaliza) /*insertar valores a la tabla encuentros(para el valor termino si es 0 es que sigue sucediendo)*/
 values
-(1,3,6,2003,16,30,false),
-(2,13,1,2003,16,30,false),
-(3,30,2,2003,16,30,true),
-(4,7,3,2003,16,30,false),
-(5,24,4,2003,16,30,true),
-(6,20,5,2003,16,30,true);
+(1,'2022-05-15','15:15:00','17:15:00'),
+(2,'2021-05-15','17:15:00','19:15:00'),
+(3,'2020-09-15','24:00:00','02:15:00'),
+(4,'2023-12-15','13:02:00','15:02:00'),
+(5,'2021-04-15','06:27:00','08:27:00'),
+(6,'2022-01-15','02:12:1','04:12:00');
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into equipos(idEquipo,categoria,logo,nombre,pais) /*insertar valores a la tabla equipos*/
 values
@@ -430,31 +412,15 @@ values
 (3,14,78),
 (4,1,1),
 (5,1,9);
-/*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-insert into reglas(idReglas) /*insertar valores a la tabla reglas padre*/
-values
-(1),
-(2),
-(3),
-(4),
-(5);
-/*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-insert into instrucciones(idReglas,descripcion,titulo,subtitulo)/*insertar valores a la tabla instrucciones*/
-values
-(1,'abc','a','b'),
-(2,'acc','b','ba'),
-(3,'aac','c','br'),
-(4,'adc','d','bf'),
-(5,'arc','k','bg');
 
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-insert into particular(idResultado,puntosPorSets,sets,ventaja)/*insertar valores a la tabla particular*/
+insert into particular(idResultado,puntosVisi,puntosLocal,setsVisi,setsLocal,ventaja)/*insertar valores a la tabla particular*/
 values
-(1,15,2,null),
-(2,30,3,null),
-(3,45,4,false),
-(4,45,4,true),
-(5,0,2,null);
+(1,15,2,2,3,null),
+(2,30,3,4,2,null),
+(3,45,4,4,3,false),
+(4,45,4,5,3,true),
+(5,0,2,0,0,null);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into resultados(idResultados)/*insertar valores a la tabla resultados padre*/
 values
@@ -464,13 +430,13 @@ values
 (4),
 (5);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-insert into rankings(idResultado,segundosDiff,minutosDiff,horasDiff,segundosTrans,minutosTrans,horasTrans,puntos,nombreJugador,posicion)/*insertar valores a la tabla rankings*/
+insert into rankings(idResultado,tiempo_Transcurrido, puntos, posicion, nombreJugador)/*insertar valores a la tabla rankings*/
 values
-(1,4,18,9,10,32,7,100,'jose',1),
-(2,8,23,12,10,32,6,40,'pepe',2),
-(3,2,30,19,10,32,5,60,'manolo',3),
-(4,1,44,2,10,32,4,null,'alberto',4),
-(5,59,1,0,10,32,3,80,'gilberto',5);
+(1,'15:15:44',100,1,'jose'),
+(2,'18:1:54',40,2,'pepe'),
+(3,'04:17:52',60,45,'manolo'),
+(4,'14:58:2',54,17,'alberto'),
+(5,'06:9:12',80,98,'gilberto');
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into sets(idDuracion,cantidadSets)/*insertar valores a la tabla sets*/
 values
@@ -504,14 +470,6 @@ values
 (4,'10:18:11',4),
 (5,'10:23:39',5);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-insert into sanciones(idReglas,razon,sancion)/*insertar valores a la tabla sanciones*/
-values
-(1,'jajajajja','adasdva'),
-(2,'fasdfasd','asdfsdfasdf'),
-(3,'asdfasdfasdf','asdfsdfasd'),
-(4,'asdfasd','asdfsdfas'),
-(5,'asdfsdfasdfsda','asdfasdfasdf');
-/*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into torneos(idTorneo,fechaComienzo,fechaFinalizado,nombreTorneo,cantidadFases)/*insertar valores a la tabla torneos*/
 values
 (1,'2003-6-20','2010-6-20','speed',3),
@@ -530,17 +488,12 @@ values
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into guest(idUsuario,nombreAutogen)/*insertar valores a la tabla guest*/
 values
-(1,'yagsdvbasdvasdvkjhgk'),
-(2,'iuasdhgvaiolsudhv'),
-(3,'asduvhaiosdkuvghbads'),
-(4,'asyuidgvaiosdvguyh'),
-(5,'asduivhasdiuvhasdhsdg');
+(1,'guest-5852858585'),
+(2,'guest-758527455');
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 
 insert into vip(idUsuario,correo,contrasenia,nombre,mesesSuscritos,rol)/*insertar valores a la tabla vip*/
 values
-(1,'a@gmail.com','123','juan',4,1),
-(2,'b@gmail.com','321','pablo',12,23),
 (3,'c@gmail.com','132','lorenzo',24,2),
 (4,'d@gmail.com','213','emiliano',1,34),
 (5,'e@gmail.com','321','clara',100,2);
@@ -553,7 +506,7 @@ values
 (1,3),
 (3,1);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-insert into fase(idTorneo,nFases,estadoFase,nombreFase)/*insertar valores a la tabla fases*/
+insert into fase(idTorneo,idFase,estadoFase,nombreFase)/*insertar valores a la tabla fases*/
 values
 (1,2,'3 equipos en pies','aguila'),
 (2,2,'2 equipos en pies','tigre'),
@@ -561,7 +514,7 @@ values
 (1,1,'32 restantes','primera parte'),
 (1,4,'no se','segunda parte');
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-insert into aplica(idDeporte,idResultado)  /*insertar valores a la tabla aplica*/
+insert into genera(idEncuentro,idResultado)  /*insertar valores a la tabla aplica*/
 values
 (1,2),
 (1,3),
@@ -617,23 +570,14 @@ values
 (5,1);
 
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-
-insert into poseen(idDeporte,idReglas)/*insertar valores a la tabla poseen*/
-values
-(1,1),
-(2,1),
-(3,1),
-(1,2),
-(1,3);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 
-insert into practican(idJugador,idEquipo,idDeporte,idResultado)/*insertar valores a la tabla practican*/
+insert into practican(idJugador,idEquipo,idDeporte)/*insertar valores a la tabla practican*/
 values
-(1,1,1,1),
-(1,2,1,1),
-(1,1,3,1),
-(1,1,1,4),
-(5,1,1,1);
+(1,1,1),
+(1,2,1),
+(1,1,3),
+(5,1,1);
 
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into realiza(idDeporte,idTorneo)/*insertar valores a la tabla realiza*/
@@ -644,13 +588,13 @@ values
 (2,1),
 (3,1);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-insert into se_especializa_en(idDeporte,idResultado,idParticipante)/*insertar valores a la tabla se especializa en*/
+insert into se_especializa_en(idDeporte,idParticipante)/*insertar valores a la tabla se especializa en*/
 values
-(1,1,1),
-(1,2,1),
-(1,1,3),
-(2,1,1),
-(1,3,1);
+(1,1),
+(1,5),
+(1,3),
+(2,1),
+(1,2);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 
 insert into tiene(idTorneo,nFases,idEncuentro)/*insertar valores a la tabla tiene*/
@@ -664,10 +608,7 @@ values
 insert into tiene_usuario(idPublicidad,idUsuario)/*insertar valores a la tabla tiene usuario*/
 values
 (1,1),
-(1,2),
-(2,1),
-(1,4),
-(3,1);
+(2,2);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into torneoInscriptos(idTorneo,inscriptos)/*insertar valores a la tabla tiene torneos inscriptos*/
 values
@@ -677,21 +618,21 @@ values
 (4,'luis'),
 (5,'maria');
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-insert into utiliza (idAlineacion, idEncuentro, idEquipo, idJugador)
+insert into utiliza (idAlineacion, idEncuentro)
 values
-(1,2,2,1),
-(2,6,1,1),
-(3,3,2,1),
-(5,1,4,1);
+(1,2),
+(2,6),
+(3,3),
+(5,1);
 
 /*///////////////////////////Creacion usuarios y permisos//////////////////////////////////////////////////////////*/
 
-create user 'usuarioConsultas'@'localhost' identified by 'consultasSQL';
+create user 'usuarioConsultas'@'KnightWare' identified by 'consultasSQL';
 GRANT SELECT ON KnightWare.* TO 'usuarioConsultas';
 GRANT update, insert ON KnightWare.Vip TO 'usuarioConsultas';
 GRANT update, insert ON KnightWare.Usuarios TO 'usuarioConsultas';
 
-create user 'usuarioAdministrador'@'localhost' identified by 'administrador1234';
+create user 'usuarioAdministrador'@'KnightWare' identified by 'administrador1234';
 GRANT ALL ON KnightWare.* TO 'usuarioAdministrador';
 
 
