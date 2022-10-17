@@ -174,10 +174,10 @@ values
 (4),
 (5);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-insert into Guest(idUsuario,nombreAutogen)/*insertar valores a la tabla guest*/
+insert into Guest(idUsuario,nombreAutogen, mac)/*insertar valores a la tabla guest*/
 values
-(1,'guest-5852858585'),
-(2,'guest-758527455');
+(1,'guest-5852858585', 'XX-XX-XX-XX'),
+(2,'guest-758527455', 'XX-XX-XX-XX'	);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 
 insert into Vip(idUsuario,correo,contrasenia,nombre,mesesSuscritos,rol)/*insertar valores a la tabla vip*/

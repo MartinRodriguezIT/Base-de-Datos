@@ -30,9 +30,9 @@ select j.nombre, j.apellido, a.Poscion, equi.Nombre
 from Jugador as j, Alineacion as a, Encuentros as e, Utiliza as u, Equipos as equi, Forman as f
 where a.idAlineacion=u.idAlineacion AND u.idEncuentro = e.idEncuentro AND e.idEncuentro=1 AND j.idJugador=a.idJugador AND equi.idEquipo=f.idEquipo AND f.idJugador=j.idJugador;
 
-
-
-
+#
+select * from Guest;
+delete from guest where idUsuario = 962462290;
 
 
  

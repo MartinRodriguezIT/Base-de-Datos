@@ -256,6 +256,7 @@ create table DeportesFavoritos
 create table Guest
 (
 	idUsuario int primary key,
+    mac varchar(30) not null unique,
     nombreAutogen varchar(100) not null
 );
 create table Visualiza
