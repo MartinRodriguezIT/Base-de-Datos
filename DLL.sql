@@ -1,12 +1,13 @@
 #drop database KnightWareV2;
 create database KnightWareV2;
 use KnightWareV2;
+
 create table Deportes(
 	idDeporte int primary key,
     cantidadJugadores int not null,
     categoria varchar(50) not null,
     nombre varchar(50) not null unique
-);
+); 
 
 create table Resultados
 (
@@ -111,10 +112,9 @@ create table Forman
 );
 create table Practican
 (
-	idJugador int,
     idEquipo int,
     idDeporte int,
-    primary key (idEquipo,idJugador,idDeporte)
+    primary key (idEquipo,idDeporte)
 );
 create table Encuentros
 (
@@ -299,7 +299,6 @@ alter table Forman add constraint fk_formanEQUI foreign key (idEquipo) reference
 alter table Guest add constraint fk_guest foreign key (idUsuario) references Usuarios(idUsuario);
 alter table Participa add constraint fk_partiENCUE foreign key (idEncuentro) references Competencia_Individual(idEncuentro);
 alter table Participa add constraint fk_partiPARTI foreign key (idParticipante) references Participantes(idParticipante);
-alter table Practican add constraint fk_pracJUGA foreign key (idJugador) references Jugador(idJugador);
 alter table Practican add constraint fk_pracEQUI foreign key (idEquipo) references Equipos(idEquipo);
 alter table Practican add constraint fk_pracDEPO foreign key (idDeporte) references Deportes(idDeporte);
 alter table Rankings add constraint fk_rankings foreign key (idResultado) references Resultados(idResultados);

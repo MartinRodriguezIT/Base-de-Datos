@@ -33,6 +33,16 @@ values
 (4,'2023-12-15 13:02:00','2023-12-15 15:02:00',"Cuartos Final"),
 (5,'2021-04-15 06:27:00','2021-04-15 08:27:00',"Semi-final" ),
 (6,'2022-01-15 02:12:1','2022-01-15 04:12:00', "Clasificatoria");
+
+insert into Encuentros(idEncuentro,fechaComienzo, fechaFinaliza, descripcionEncuentro) /*insertar valores a la tabla encuentros(para el valor termino si es 0 es que sigue sucediendo)*/
+values
+(7,'2022-12-17 15:15:00','2022-05-15 17:15:00',"Final" ),
+(8,'2022-12-17 17:15:00','2021-05-15 19:15:00',"Amistoso" ),
+(9,'2022-12-17 23:00:00','2020-09-15 02:15:00',"Amistoso" ),
+(10,'2022-12-17 13:02:00','2023-12-15 15:02:00',"Cuartos Final"),
+(11,'2022-12-17 06:27:00','2021-04-15 08:27:00',"Semi-final" ),
+(12,'2022-12-17 02:12:1','2022-01-15 04:12:00', "Clasificatoria");
+
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into Equipos(idEquipo,categoria,logo,nombre,pais) /*insertar valores a la tabla equipos*/
 values
@@ -202,6 +212,14 @@ values
 (1),
 (2),
 (3);
+insert into Competencia_Colectiva(idEncuentro) /*insertar valores a la tabla competencia colectiva*/
+values
+(7),
+(8),
+(9),
+(10),
+(11),
+(12);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into Competencia_Individual(idEncuentro) /*insertar valores a la tabla competencia individual*/ 
 values
@@ -216,6 +234,15 @@ values
 (1,1,8),
 (1,2,14),
 (2,3,5);
+
+insert into Compite(idEncuentro,idEquipo,idJugador)/*insertar valores a la tabla compite*/
+values
+(7,2,9),
+(8,2,10),
+(9,3,13),
+(7,4,8),
+(8,2,14),
+(9,5,5);
 
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into DeportesFavoritos(idUsuario,DeporteFavorito)/*insertar valores a la tabla deportes favoritos*/
@@ -232,6 +259,7 @@ values
 (3,1),
 (5,2),
 (5,1),
+(3,4),
 (3,3);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into Participa(idEncuentro,idParticipante)/*insertar valores a la tabla participa*/
@@ -240,13 +268,13 @@ values
 (5,3);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 
-insert into Practican(idJugador,idEquipo,idDeporte)/*insertar valores a la tabla practican*/
+insert into Practican(idEquipo,idDeporte)/*insertar valores a la tabla practican*/
 values
-(9,1,1),
-(10,1,1),
-(8,1,1),
-(13,1,1),
-(14,2,4);
+(1,1),
+(3,1),
+(2,2),
+(4,3),
+(5,4);
 
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into Realiza(idDeporte,idTorneo)/*insertar valores a la tabla realiza*/
