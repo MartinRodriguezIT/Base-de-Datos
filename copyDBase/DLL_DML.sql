@@ -2,20 +2,11 @@
 create database KnightWareV2;
 use KnightWareV2;
 
-create table tienenEncuentros(
-idEncuentro int,
-idDeporte int,
-primary key(idEncuentro, idDeporte)
-);
-Alter table tienenEncuentros add constraint fkasa foreign key(idEncuentro) references Encuentros(idEncuentro);
-Alter table tienenEncuentros add constraint fkoso foreign key(idDeporte) references Deportes(idDeporte);
-select * from Encuentros;
 create table Deportes(
 	idDeporte int primary key,
     categoria varchar(50) not null,
     nombre varchar(50) not null unique
 ); 
-select distinct e.nombre from Equipos as e, Compite as c where c.idEncuentro=1 and c.idEquipo = e.idEquipo;
 create table Resultados
 (
 	idResultados int primary key
@@ -79,19 +70,16 @@ create table Incidencias
 );
  create table Participantes
 (
-	idParticipante int primary key,
+	idDeporte int,
+	idParticipante int,
     nombre varchar(50) not null,
     apellido varchar(50) not null,
     edad int not null,
     sexo varchar(1),
-    paisNacimiento varchar(30) not null
+    paisNacimiento varchar(30) not null,
+    primary key (idDeporte, idParticipante)
 );
-create table Se_Especializa_En
-(
-	idDeporte int,
-    idParticipante int,
-    primary key (idDeporte,idparticipante)
-);
+
 create table Jugador
 (
 	idJugador int primary key,
@@ -104,11 +92,13 @@ create table Jugador
 
 create table Equipos
 (
-	idEquipo int primary key,
+	idDeporte int,
+	idEquipo int ,
     categoria varchar(50) not null,
     logo varchar(200),
     nombre varchar(30) not null,
-    pais varchar(30) not null
+    pais varchar(30) not null,
+    primary key(idDeporte, idEquipo)
 );
 create table Forman
 (
@@ -116,42 +106,45 @@ create table Forman
     idEquipo int,
     primary key (idJugador,idEquipo)
 );
-create table Practican
-(
-    idEquipo int,
-    idDeporte int,
-    primary key (idEquipo,idDeporte)
-);
 create table Encuentros
 (
-	idEncuentro int primary key,
+    idDeporte int,
+	idEncuentro int,
     fechaComienzo datetime not null,
-    fechaFinaliza datetime,
-    descripcionEncuentro varchar(100) not null
+    fechaFinaliza datetime not null,
+    descripcionEncuentro varchar(100) not null,
+    primary key(idDeporte, idEncuentro)
 );
 create table Competencia_Colectiva
 (
 	idEncuentro int,
-    primary key (idEncuentro)
+    idDeporte int,
+    primary key (idEncuentro, idDeporte)
 );
 create table Competencia_Individual
 (
 	idEncuentro int,
-    primary key (idEncuentro)
-);
-create table Participa
-(
-	idEncuentro int,
-    idParticipante int,
-    primary key (idEncuentro,idParticipante)
+    idDeporte int,
+    primary key (idEncuentro, idDeporte)
 );
 
 create table Compite
 (
+	idDeporteEncuentro int,
 	idEncuentro int,
     idEquipo int,
     idJugador int,
-    primary key (idEncuentro,idEquipo,idJugador)
+    idDeporteEquipo int,
+    primary key (idDeporteEncuentro, idDeporteEquipo, idEncuentro,idEquipo,idJugador)
+);
+
+create table Participa
+(
+	idDeporteEncuentro int,
+	idEncuentro int,
+    idParticipante int,
+    idDeporteParticipante int,
+    primary key (idDeporteEncuentro, idEncuentro, idParticipante,idDeporteParticipante)
 );
 create table Alineacion
 (
@@ -198,8 +191,6 @@ create table torneosColectivos(
 	idTorneo int primary key
 );
 
-
-
 create table ParticipatesTorneosIndividuales(
 	idTorneo int,
     idParticipante int,
@@ -207,14 +198,12 @@ create table ParticipatesTorneosIndividuales(
     primary key (idTorneo, idParticipante)
 );
 
-
 create table ParticipatesTorneosEquipos(
 	idTorneo int,
     idEquipo int,
     estadoEquipo bool not null,
     primary key (idTorneo, idEquipo)
 );
-
 
 create table torneosTienenEncuentrosIndivi(
 	idTorneo int, 
@@ -296,33 +285,42 @@ create table Utiliza
     idEncuentro int,
     primary key(idAlineacion,idEncuentro)
 );
+
 alter table Realiza add constraint fk_realizaTorn foreign key (idTorneo) references Torneos(idTorneo);
 alter table Realiza add constraint fk_realizaDepo foreign key (idDeporte) references Deportes(idDeporte) on delete cascade;
 alter table Vip add constraint uk_correo unique(correo);
-alter table Competencia_Colectiva add constraint fk_compCole foreign key (idEncuentro) references Encuentros(idEncuentro);
-alter table Competencia_Individual add constraint fk_compIndi foreign key (idEncuentro) references Encuentros(idEncuentro);
-alter table Compite add constraint fk_compiteENCU foreign key (idEncuentro) references Competencia_Colectiva(idEncuentro);
+alter table Competencia_Colectiva add constraint fk_compCole foreign key (idEncuentro) references Encuentros(idEncuentro) on delete cascade;
+alter table Competencia_Colectiva add constraint fk_compColeDepo foreign key (idDeporte) references Deportes(idDeporte) on delete cascade;
+
+alter table Competencia_Individual add constraint fk_compIndiDepo foreign key (idDeporte) references Deportes(idDeporte) on delete cascade;
+alter table Competencia_Individual add constraint fk_compIndi foreign key (idEncuentro) references Encuentros(idEncuentro) on delete cascade;
+
+alter table Compite add constraint fk_compiteENCU foreign key (idEncuentro, idDeporte) references Competencia_Colectiva(idEncuentro, idDeporte) on delete cascade;
 alter table Compite add constraint fk_compiteJUGA foreign key (idJugador) references Forman(idJugador);
+
 alter table DeportesFavoritos add constraint fk_depoFavUSU foreign key (idUsuario) references Vip(idUsuario) on delete cascade;
 alter table DeportesFavoritos add constraint fk_depoFavDEPO foreign key (deporteFavorito) references Deportes(idDeporte) on delete cascade;
 alter table Forman add constraint fk_formanJUGA foreign key (idJugador) references Jugador(idJugador);
 alter table Forman add constraint fk_formanEQUI foreign key (idEquipo) references Equipos(idEquipo);
 alter table Guest add constraint fk_guest foreign key (idUsuario) references Usuarios(idUsuario) on delete cascade;
-alter table Participa add constraint fk_partiENCUE foreign key (idEncuentro) references Competencia_Individual(idEncuentro);
+alter table Participa add constraint fk_partiENCUE foreign key (idEncuentro) references Competencia_Individual(idEncuentro) on delete cascade;
 alter table Participa add constraint fk_partiPARTI foreign key (idParticipante) references Participantes(idParticipante);
-alter table Practican add constraint fk_pracEQUI foreign key (idEquipo) references Equipos(idEquipo);
-alter table Practican add constraint fk_pracDEPO foreign key (idDeporte) references Deportes(idDeporte) on delete cascade;
+
+alter table Equipos add constraint fk_idDeporte foreign key (idDeporte) references Deportes(idDeporte);
+alter table Encuentros add constraint fk_idDeporteEn foreign key (idDeporte) references Deportes(idDeporte);
+alter table Participantes add constraint fk_idDeporteParti foreign key (idDeporte) references Deportes(idDeporte);
+
+
 alter table Rankings add constraint fk_rankings foreign key (idResultado) references Resultados(idResultados);
 alter table Rounds add constraint fk_rounds foreign key (idDuracion) references Duracion(idDuracion);
-alter table Se_Especializa_En add constraint fk_seEspeDEPO foreign key (idDeporte) references Deportes(idDeporte) on delete cascade;
-alter table Se_Especializa_En add constraint fk_seEspePARTI foreign key (idParticipante) references Participantes(idParticipante);
 alter table Sets add constraint fk_sets foreign key (idDuracion) references Duracion(idDuracion);
 alter table Tiempo add constraint fk_tiempo foreign key (idDuracion) references Duracion(idDuracion);
 alter table Tiene_Usuario add constraint fk_tiene_usuPUB foreign key (idPublicidad) references Publicidad(idPublicidad);
 alter table Tiene_Usuario add constraint fk_tiene_usuUSU foreign key (idUsuario) references Guest(idUsuario);
 alter table Vip add constraint fk_vip foreign key (idUsuario) references Usuarios(idUsuario);
 alter table Visualiza add constraint fk_visaUSU foreign key (idUsuario) references Usuarios(idUsuario);
-alter table Visualiza add constraint fk_visaENCU foreign key (idEncuentro) references Encuentros(idEncuentro);
+alter table Visualiza add constraint fk_visaENCU foreign key (idEncuentro) references Encuentros(idEncuentro) on delete cascade;
+
 alter table Jugador add constraint ck_jugaSexo check(sexo = 'f' or sexo = 'm');
 alter table Participantes add constraint ck_partiSexo check(sexo = 'f' or sexo = 'm');
 alter table Vip add constraint ck_usuRol check(rol >= 0);
@@ -333,13 +331,12 @@ alter table Compite add constraint fk_compiteEQUI foreign key (idEquipo) referen
 
 alter table Utiliza add CONSTRAINT `fk_utiliALI` FOREIGN KEY (`idAlineacion`) REFERENCES `Alineacion` (`idAlineacion`);
 alter table Utiliza add CONSTRAINT `fk_utiliENCU` FOREIGN KEY (`idEncuentro`) REFERENCES `Encuentros` (`idEncuentro`);
-alter table Genera add CONSTRAINT `fk_generaENCU` FOREIGN KEY (`idEncuentro`) REFERENCES `Encuentros` (`idEncuentro`);
+alter table Genera add CONSTRAINT `fk_generaENCU` FOREIGN KEY (`idEncuentro`) REFERENCES `Encuentros` (`idEncuentro`) on delete cascade;
 alter table Genera add CONSTRAINT `fk_generaResu` FOREIGN KEY (`idResultado`) REFERENCES `Resultados` (`idResultados`);
 alter table Hacen add CONSTRAINT `fk_hacenOcu` FOREIGN KEY (`idOcurrencia`) REFERENCES `Ocurrencias` (`idOcurrencia`);
 alter table Hacen add CONSTRAINT `fk_hacenInci` FOREIGN KEY (`idIncidencia`) REFERENCES `Incidencias` (`idIncidencia`);
 alter table Notifica add CONSTRAINT `fk_notificaInci` FOREIGN KEY (idIncidencia, idOcurrencia) REFERENCES Hacen (idIncidencia, idOcurrencia) on delete cascade ;
-alter table Notifica add CONSTRAINT `fk_notificaEncu` FOREIGN KEY (`idEncuentro`) REFERENCES `Encuentros` (`idEncuentro`);
-
+alter table Notifica add CONSTRAINT `fk_notificaEncu` FOREIGN KEY (`idEncuentro`) REFERENCES `Encuentros` (`idEncuentro`) on delete cascade;
 Alter table torneosIndividuales add constraint fk_torneosIndivi foreign key(idTorneo) references Torneos(idTorneo);
 Alter table torneosColectivos add constraint fk_torneosColec foreign key(idTorneo) references Torneos(idTorneo);
 
@@ -355,10 +352,16 @@ Alter table ParticipatesTorneosIndividuales add constraint fk_torneosIndicIDPart
 Alter table ParticipatesTorneosIndividuales add constraint fk_torneosIndicIDTorneo foreign key(idTorneo) references torneosIndividuales(idTorneo);
 Alter table ParticipatesTorneosEquipos add constraint fk_torneosColecIDTorneo foreign key(idTorneo) references torneosColectivos(idTorneo);
 
-
+Alter table tienenEncuentros add constraint fkasa foreign key(idEncuentro) references Encuentros(idEncuentro) on delete cascade;
+Alter table tienenEncuentros add constraint fkoso foreign key(idDeporte) references Deportes(idDeporte);
 alter table EquiposFavoritos add constraint fk_EquipoFavUSU foreign key (idEquipoFavorito) references Equipos(idEquipo);
 alter table EquiposFavoritos add constraint fk_EquipoidUsu foreign key (idUsuario) references VIP(idUsuario);
 alter table Alineacion add constraint fk_idJugadorAline foreign key (idJugador) references Jugador(idJugador);
 alter table Puntos add constraint fk_idResu foreign key (idResultado) references Resultados(idResultados);
 alter table Rankings add constraint fk_idResuRank foreign key (idResultado) references Resultados(idResultados);
 alter table Particular add constraint fk_idResParti foreign key (idResultado) references Resultados(idResultados);
+
+alter table Compite add constraint ck_CompiteDeporte check(idDeporteEncuentro = idDeporteEquipo);
+alter table Participa add constraint ck_ParticipaDeporte check(idDeporteEncuentro = idDeporteParticipante);
+
+

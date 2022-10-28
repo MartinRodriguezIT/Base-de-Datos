@@ -1,6 +1,4 @@
 #Alineacion
-select * from deportes;
-insert into tienenEncuentros(idEncuentro, idDeporte) values (1,3),(3,4);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into Deportes(idDeporte,categoria,nombre) /*insertar valores a la tabla deportes*/ 
 values 
@@ -25,33 +23,31 @@ values
 (8),
 (9);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
+insert into Encuentros(idDeporte, idEncuentro,fechaComienzo, fechaFinaliza, descripcionEncuentro) /*insertar valores a la tabla encuentros(para el valor termino si es 0 es que sigue sucediendo)*/
+values
+(1, 1,'2022-05-15 15:15:00','2022-05-15 17:15:00',"Final" ),
+(1, 2,'2021-05-15 17:15:00','2021-05-15 19:15:00',"Amistoso" ),
+(2, 3,'2020-09-15 23:00:00','2020-09-15 02:15:00',"Amistoso" ),
+(3, 4,'2023-12-15 13:02:00','2023-12-15 15:02:00',"Cuartos Final"),
+(2, 5,'2021-04-15 06:27:00','2021-04-15 08:27:00',"Semi-final" ),
+(1, 6,'2022-01-15 02:12:1','2022-01-15 04:12:00', "Clasificatoria");
 insert into Encuentros(idEncuentro,fechaComienzo, fechaFinaliza, descripcionEncuentro) /*insertar valores a la tabla encuentros(para el valor termino si es 0 es que sigue sucediendo)*/
 values
-(1,'2022-05-15 15:15:00','2022-05-15 17:15:00',"Final" ),
-(2,'2021-05-15 17:15:00','2021-05-15 19:15:00',"Amistoso" ),
-(3,'2020-09-15 23:00:00','2020-09-15 02:15:00',"Amistoso" ),
-(4,'2023-12-15 13:02:00','2023-12-15 15:02:00',"Cuartos Final"),
-(5,'2021-04-15 06:27:00','2021-04-15 08:27:00',"Semi-final" ),
-(6,'2022-01-15 02:12:1','2022-01-15 04:12:00', "Clasificatoria");
-select e.descripcionEncuentro from Competencia_Colectiva as c, Encuentros as e where e.idEncuentro=c.idEncuentro ;
-insert into Encuentros(idEncuentro,fechaComienzo, fechaFinaliza, descripcionEncuentro) /*insertar valores a la tabla encuentros(para el valor termino si es 0 es que sigue sucediendo)*/
-values
-(7,'2022-12-17 15:15:00','2022-05-15 17:15:00',"Final" ),
-(8,'2022-12-17 17:15:00','2021-05-15 19:15:00',"Amistoso" ),
-(9,'2022-12-17 23:00:00','2020-09-15 02:15:00',"Amistoso" ),
-(10,'2022-12-17 13:02:00','2023-12-15 15:02:00',"Cuartos Final"),
-(11,'2022-12-17 06:27:00','2021-04-15 08:27:00',"Semi-final" ),
-(12,'2022-12-17 02:12:1','2022-01-15 04:12:00', "Clasificatoria");
-select e.descripcionEncuentro from Competencia_Colectiva as c, Encuentros as e where e.idEncuentro=c.idEncuentro;
+(1, 7,'2022-12-17 15:15:00','2022-05-15 17:15:00',"Final" ),
+(2, 8,'2022-12-17 17:15:00','2021-05-15 19:15:00',"Amistoso" ),
+(3, 9,'2022-12-17 23:00:00','2020-09-15 02:15:00',"Amistoso" ),
+(5, 10,'2022-12-17 13:02:00','2023-12-15 15:02:00',"Cuartos Final"),
+(3, 11,'2022-12-17 06:27:00','2021-04-15 08:27:00',"Semi-final" ),
+(2, 12,'2022-12-17 02:12:1','2022-01-15 04:12:00', "Clasificatoria");
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-insert into Equipos(idEquipo,categoria,logo,nombre,pais) /*insertar valores a la tabla equipos*/
+insert into Equipos(idDeporte, idEquipo,categoria,logo,nombre,pais) /*insertar valores a la tabla equipos*/
 values
-(1,'primera','http//megalovania','Pe�arol','espania'),
-(2,'segunda','http//megalovania','real madrid','espania'),
-(3,'tercera','http//megalovania','barcelona','espania'),
-(4,'sub-15','http//megalovania','aguada','uruguay'),
-(5,'sub-16','http//megalovania','redbull','estados unidos'),
-(6,'sub-17','http//megalovania','ELtorque','estados unidos');
+(1, 1,'primera','http//megalovania','Peniarol','espania'),
+(2, 2,'segunda','http//megalovania','real madrid','espania'),
+(1, 3,'tercera','http//megalovania','barcelona','espania'),
+(1, 4,'sub-15','http//megalovania','aguada','uruguay'),
+(2, 5,'sub-16','http//megalovania','redbull','estados unidos'),
+(1, 6,'sub-17','http//megalovania','ELtorque','estados unidos');
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into Jugador(idJugador,nombre,apellido,edad,sexo,paisNacimiento) /*insertar valores a la tabla jugador*/
 values
@@ -70,15 +66,14 @@ values
 (13,'Martin','tin',14,'f','Uruguay'),
 (14,'Juansin','tin',21,'f','Argentina'),
 (15,'lele','meme',20,'f','italia');
-select * from Practican;
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-insert into Participantes(idParticipante,nombre,apellido,edad,sexo,paisNacimiento)/*insertar valores a la tabla participantes*/
+insert into Participantes(idDeporte, idParticipante,nombre,apellido,edad,sexo,paisNacimiento)/*insertar valores a la tabla participantes*/
 values
-(1,'alberto','perez',19,'m','espa�a'),
-(2,'gonzalo','ballestrino',32,'m','uruguay'),
-(3,'ignacio','carvajal',57,'m','mexico'),
-(4,'sebastian','arevalo',42,'m','argentina'),
-(5,'mirta','legran',98,'f','argentina');
+(4, 1,'alberto','perez',19,'m','espa a'),
+(4, 2,'gonzalo','ballestrino',32,'m','uruguay'),
+(2, 3,'ignacio','carvajal',57,'m','mexico'),
+(1, 4,'sebastian','arevalo',42,'m','argentina'),
+(2, 5,'mirta','legran',98,'f','argentina');
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into Publicidad(idPublicidad,url)/*insertar valores a la tabla publicidad*/
 values
@@ -226,15 +221,13 @@ values
 (4),
 (5);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-insert into Compite(idEncuentro,idEquipo,idJugador)/*insertar valores a la tabla compite*/
+insert into Compite(idDeporte, idEncuentro,idEquipo,idJugador, idDeporteEquipo)/*insertar valores a la tabla compite*/
 values
-(1,1,9),
-(1,1,10),
-(1,1,13),
-(1,1,8),                
-
-(1,2,14);
-select e.idEquipo, e.nombre, j.nombre from Equipos as e, Jugador as j, Forman as f where j.idJugador = f.idJugador AND f.idEquipo= (select idEquipo from Equipos as e2 where e2.nombre='Pe�arol' AND e2.categoria='primera');
+(1, 1,1,9,1),
+(1, 1,1,10, 1),
+(1, 1,1,13, 1),
+(1, 1,1,8, 1),                
+(1, 1,2,14, 1);
 
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into DeportesFavoritos(idUsuario,DeporteFavorito)/*insertar valores a la tabla deportes favoritos*/
@@ -254,12 +247,11 @@ values
 (3,4),
 (3,3);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-insert into Participa(idEncuentro,idParticipante)/*insertar valores a la tabla participa*/
+insert into Participa(idDeporteEncuentro,idEncuentro,idParticipante, idDeporteParticipante)/*insertar valores a la tabla participa*/
 values
-(4,2),
-(5,3);
+(1, 4,2, 2),
+(1, 5,3, 3);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
-select * from Deportes;
 insert into Practican(idEquipo,idDeporte)/*insertar valores a la tabla practican*/
 values
 (1,2),
@@ -315,7 +307,6 @@ insert into Hacen(idIncidencia, idOcurrencia) values
 (1, 1),
 (2, 2),
 (3, 3),
-(4, 4),
 (5, 5);
 
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
@@ -323,7 +314,6 @@ insert into Notifica(idIncidencia, idOcurrencia, idEncuentro) values
 (1, 1, 1),
 (2, 2, 1),
 (3, 3, 1),
-(4, 4, 2),
 (5, 5, 2);
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into torneosIndividuales(idTorneo)values
@@ -340,10 +330,6 @@ insert into torneosTienenEncuentrosIndivi(idTorneo, idEncuentro, idParticipante)
 (2, 5, 3),
 (1, 4, 2);
 
-Revoke ALL privileges, grant option from 'usuarioAdministrador'@'knightwarev2' ;
-flush privileges;show grants for usuarioAdministrador;
-create user 'usuarioAdministrador'@'knightwarev2' identified by 'administrador1234';
-GRANT ALL ON knightwarev2.* TO 'usuarioAdministrador';
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into torneosTienenEncuentrosEquipos(idTorneo, idEncuentro, idEquipo, idJugador) values
 (4, 1, 1, 10),
@@ -351,10 +337,7 @@ insert into torneosTienenEncuentrosEquipos(idTorneo, idEncuentro, idEquipo, idJu
 (4, 1, 1, 8),
 (4, 1, 2, 14),
 (4, 1, 1, 9);
-insert into torneosTienenEncuentrosEquipos(idTorneo, idEncuentro, idEquipo, idJugador) values
-(6, 1, 1, 10);
-select * from ParticipatesTorneosEquipos;
-delete from torneosTienenEncuentrosEquipos where idTorneo =4;
+
 /*'////////////////////////////////////////////////////////////////////////////////////////////////////////////////'*/
 insert into ParticipatesTorneosIndividuales (idTorneo, idParticipante, estadoParticipante)values
 (1, 2, true),
